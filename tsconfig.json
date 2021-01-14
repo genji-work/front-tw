@@ -1,0 +1,27 @@
+{
+  "buildOnSave": false,
+  "compilerOptions": {
+    "experimentalDecorators": true, // 取消注解带来的错误提示
+    "outDir": "./javascript/", // 	重定向输出目录。
+    "sourceMap": true, // 生成相应的 .map文件。
+    "allowJs": true, // 允许编译js文件
+    "noImplicitAny": true, // 在表达式和声明上有隐含的 any类型时报错。
+    "noImplicitReturns": true, // 不是函数的所有返回路径都有返回值时报错。
+    "noImplicitThis": true, // 当 this表达式的值为 any类型的时候，生成一个错误。
+    "allowSyntheticDefaultImports": true, // 允许从没有设置默认导出的模块中默认导入。这并不影响代码的输出，仅为了类型检查。
+    "alwaysStrict": true, // 以严格模式解析并为每个源文件生成 "use strict"语句
+    "checkJs": false, // 在 .js文件中报告错误。与 allowJs配合使用。
+    "diagnostics": true, // 显示诊断信息。
+    "preserveConstEnums": true, // 保留 const和 enum声明。
+    "reactNamespace": "React", // 当目标为生成 "react" JSX时，指定 createElement和 __spread的调用对象
+    "removeComments": true, // 删除所有注释，除了以 /!*开头的版权信息。
+    "strictPropertyInitialization": true, // 确保类的非undefined属性已经在构造函数里初始化。若要令此选项生效，需要同时启用 strictNullChecks。
+    "strictNullChecks": true, // 在严格的 null检查模式下， null和 undefined值不包含在任何类型里，只允许用它们自己和 any来赋值（有个例外， undefined可以赋值到 void）。
+    "lib": ["es5", "dom", "ScriptHost"], // --target ES5：DOM，ES5，ScriptHost
+    "module": "commonjs", // 指定生成哪个模块系统代码
+    "target": "es5", // 指定ECMAScript目标版本
+    "jsx": "react" // 在 .tsx文件里支持JSX： "React"或 "Preserve"
+  },
+  "exclude": ["node_modules", "dist", "javascript"],
+  "include": ["./src/**/*", "./public/**/*", "./types/*.d.ts"]
+}

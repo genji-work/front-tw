@@ -1,0 +1,11 @@
+node_modules
+mockService/node_modules
+package-lock.json
+mockService/package-lock.json
+yarn.lock
+mockService/yarn.lock
+.idea
+.vscode
+.DS_Store
+coverage
+dist

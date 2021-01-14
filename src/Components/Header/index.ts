@@ -10,6 +10,7 @@ export default function Header() {
 
 Header.render = () => {
   const { user, userMenuDropdown } = store.getState();
+
   return `
     <div class="${style.container}" id="header">
       <img class="${style.logo}" src="${logo}" />

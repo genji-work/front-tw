@@ -88,7 +88,7 @@ const handleListReload = async () => {
   const oldDom = document.querySelector(`.${style.container}`);
   const newDom = document.createRange().createContextualFragment(List.render());
   (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
-  await delay(500);
+  await delay();
   List.effect();
 }
 

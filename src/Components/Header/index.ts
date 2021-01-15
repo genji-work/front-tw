@@ -77,7 +77,7 @@ const handleReload = async () => {
   const oldDom = document.querySelector(`.${style.container}`);
   const newDom = document.createRange().createContextualFragment(Header.render());
   (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
-  await delay(500);
+  await delay();
   Header.effect();
 }
 

@@ -155,7 +155,7 @@ const handleItemReload = async (data: any) => {
   const oldDom = document.querySelector(`#list_${data.id}`);
   const newDom = document.createRange().createContextualFragment(Item.render(data));
   (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
-  await delay(500);
+  await delay();
   Item.effect();
 }
 

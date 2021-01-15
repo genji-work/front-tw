@@ -68,7 +68,7 @@ const handleReloadStatistics = async () => {
   const oldDom = document.querySelector(`.${style.container}`);
   const newDom = document.createRange().createContextualFragment(Statistics.render());
   (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
-  await delay(500);
+  await delay();
   Statistics.effect();
 }
 

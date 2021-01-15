@@ -25,6 +25,8 @@ export function throttle(fn, wait = 160) {
 
 export function delay(wait = 0) {
   return new Promise((resolve) => {
-    resolve();
-  }, wait);
+    setTimeout(() => {
+      resolve();
+    }, wait);
+  });
 }

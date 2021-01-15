@@ -1,8 +1,9 @@
 import * as style from './index.less';
 import * as menuStyle from '../Main/Menu/index.less';
-import * as parentStyle from '../index.less';
 import assets from "../../assets";
 import store from "../../store";
+import EventBus from '../../EventBus';
+import { delay } from '../../util';
 const { logo } = assets;
 
 export default function Header() {
@@ -48,23 +49,36 @@ const handleShowMenu = (e: Event) => {
   (menu as Element).classList.add(menuStyle['menu-show']);
 }
 
-const handleUserMenuToggle = () => {
+const handleUserMenuToggle = (e: Event) => {
+  e.stopPropagation();
   const { userMenuDropdown } = store.getState();
   store.dispatch('setUserMenuDrop', {
     userMenuDropdown: !userMenuDropdown
   });
-  Header.reload();
+  EventBus.emit('reload_header');
 };
 
 const handleCancelUserMenu = () => {
   store.dispatch('setUserMenuDrop', {
     userMenuDropdown: false
   });
-  Header.reload();
+  EventBus.emit('reload_header');
 };
 
 const handleCancelDropdownEvent = (e: Event) => {
   e.stopPropagation();
+}
+
+
+const handleReload = async () => {
+  Header.unBind();
+  await delay();
+  const parentDom = document.querySelector(`.${style.container}`)?.parentNode;
+  const oldDom = document.querySelector(`.${style.container}`);
+  const newDom = document.createRange().createContextualFragment(Header.render());
+  (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
+  await delay(500);
+  Header.effect();
 }
 
 Header.effect = () => {
@@ -78,6 +92,8 @@ Header.effect = () => {
   (userMenuDropdown as Element).addEventListener('click', handleCancelDropdownEvent);
 
   window.addEventListener('click', handleCancelUserMenu);
+
+  EventBus.addListener('reload_header', handleReload);
 }
 
 Header.unBind = () => {
@@ -91,18 +107,6 @@ Header.unBind = () => {
   (userMenuDropdown as Element).removeEventListener('click', handleCancelDropdownEvent);
 
   window.removeEventListener('click', handleCancelUserMenu);
-}
 
-Header.reload = () => {
-  Header.unBind();
-  setTimeout(() => {
-    const parentDom = document.querySelector(`.${parentStyle.app}`);
-    const oldDom = document.querySelector(`.${style.container}`);
-    const newDom = document.createRange().createContextualFragment(Header.render());
-    (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
-
-    setTimeout(() => {
-      Header.effect();
-    })
-  })
+  EventBus.removeListener('reload_header', handleReload);
 }

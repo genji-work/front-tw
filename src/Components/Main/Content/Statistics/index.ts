@@ -1,8 +1,7 @@
+import EventBus from '../../../../EventBus';
 import store from '../../../../store';
-
+import { delay } from '../../../../util';
 import style from './index.less';
-import parentStyle from '../index.less';
-
 export default function Statistics() {}
 
 Statistics.render = () => {
@@ -62,9 +61,21 @@ Statistics.render = () => {
   `;
 }
 
-Statistics.reload = () => {
-  const parentDom = document.querySelector(`.${parentStyle.container}`);
+const handleReloadStatistics = async () => {
+  Statistics.unBind();
+  await delay();
+  const parentDom = document.querySelector(`.${style.container}`)?.parentNode;
   const oldDom = document.querySelector(`.${style.container}`);
   const newDom = document.createRange().createContextualFragment(Statistics.render());
   (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
+  await delay(500);
+  Statistics.effect();
+}
+
+Statistics.effect = () => {
+  EventBus.addListener('reload_statistics', handleReloadStatistics);
+}
+
+Statistics.unBind = () => {
+  EventBus.removeListener('reload_statistics', handleReloadStatistics);
 }

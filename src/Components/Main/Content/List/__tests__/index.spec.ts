@@ -52,6 +52,5 @@ describe('component List module', () => {
     expect(document.body.firstElementChild?.id).toBe('main_list');
 
     List.effect();
-    expect(List.reload).toThrowError();
   });
 });

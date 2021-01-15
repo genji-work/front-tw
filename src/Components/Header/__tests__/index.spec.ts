@@ -1,7 +1,8 @@
+import EventBus from '../../../EventBus';
 import Header from '../index';
 
 describe('component header module', () => {
-  jest.spyOn(Header, 'reload');
+  jest.spyOn(EventBus, 'emit');
   test('render & effect', () => {
     expect(Header.render).toBeInstanceOf(Function);
     const domStr = Header.render();
@@ -27,8 +28,9 @@ describe('component header module', () => {
     userMenuDropdown && userMenuDropdown.click();
 
     (document.body.firstElementChild as HTMLElement).click();
+    expect(EventBus.emit).toBeCalled();
 
-    expect(Header.reload).toBeCalled();
+    document.body.click();
   });
 
   afterEach(() => {

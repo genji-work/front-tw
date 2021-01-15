@@ -1,7 +1,8 @@
 import style from './index.less';
-import parentStyle from '../index.less';
 import store from '../../../../store';
 import Item from './Item';
+import EventBus from '../../../../EventBus';
+import { delay } from '../../../../util';
 
 export default function List() {}
 
@@ -80,25 +81,24 @@ List.render = () => {
   `;
 }
 
+const handleListReload = async () => {
+  List.unBind();
+  await delay();
+  const parentDom = document.querySelector(`.${style.container}`)?.parentNode;
+  const oldDom = document.querySelector(`.${style.container}`);
+  const newDom = document.createRange().createContextualFragment(List.render());
+  (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
+  await delay(500);
+  List.effect();
+}
+
 List.effect = () => {
   Item.effect();
+  EventBus.addListener('reload_main_content_list', handleListReload)
 }
 
 
 List.unBind = () => {
   Item.unBind();
-}
-
-List.reload = () => {
-  List.unBind();
-  setTimeout(() => {
-    const parentDom = document.querySelector(`.${parentStyle.container}`);
-    const oldDom = document.querySelector(`.${style.container}`);
-    const newDom = document.createRange().createContextualFragment(List.render());
-    (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
-
-    setTimeout(() => {
-      List.effect();
-    });
-  })
+  EventBus.removeListener('reload_main_content_list', handleListReload);
 }

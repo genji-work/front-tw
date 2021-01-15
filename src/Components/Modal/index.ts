@@ -1,7 +1,7 @@
 import * as style from './index.less';
-import * as parentStyle from '../index.less';
 import store from '../../store';
-import Item from '../Main/Content/List/Item';
+import { delay } from '../../util';
+import EventBus from '../../EventBus';
 
 export default function Modal() {
 }
@@ -35,19 +35,17 @@ Modal.render = () => {
   `;
 }
 
-Modal.reload = () => {
+const handleModalReload = async () => {
   Modal.unBind();
-  setTimeout(() => {
-    const parentDom = document.querySelector(`.${parentStyle.app}`);
-    const oldDom = document.querySelector(`.${style.container}`);
-    const newDom = document.createRange().createContextualFragment(Modal.render());
-    (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
+  await delay();
+  const parentDom = document.querySelector(`.${style.container}`)?.parentNode;
+  const oldDom = document.querySelector(`.${style.container}`);
+  const newDom = document.createRange().createContextualFragment(Modal.render());
+  (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
+  await delay(500);
+  Modal.effect();
+}
 
-    setTimeout(() => {
-      Modal.effect();
-    })
-  })
-};
 
 const handleCancel = () => {
   store.dispatch('setModalProps', {
@@ -56,7 +54,7 @@ const handleCancel = () => {
     }
   });
 
-  Modal.reload();
+  EventBus.emit('reload_modal');
 }
 
 const handleAddBrowserItem = () => {
@@ -74,7 +72,7 @@ const handleAddBrowserItem = () => {
       });
       const { cruises } = store.getState();
       const data = cruises.find((item: any) => item.id === id);
-      data && Item.reload(data);
+      data && EventBus.emit('reload_main_content_list_item', data);
     }
   }
   handleCancel();
@@ -102,6 +100,8 @@ Modal.effect = () => {
   const addInput = document.querySelector('#add_input');
 
   (addInput as HTMLElement).addEventListener('keyup', handleSubmit);
+
+  EventBus.addListener('reload_modal', handleModalReload);
 };
 
 Modal.unBind = () => {
@@ -120,4 +120,6 @@ Modal.unBind = () => {
   const addInput = document.querySelector('#add_input');
 
   (addInput as HTMLElement).removeEventListener('keyup', handleSubmit);
+
+  EventBus.removeListener('reload_modal', handleModalReload);
 }

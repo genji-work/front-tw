@@ -1,8 +1,9 @@
+import EventBus from '../../../EventBus';
 import store from '../../../store';
 import Modal from '../index';
 
 describe('component modal module', () => {
-  jest.spyOn(Modal, 'reload');
+  jest.spyOn(EventBus, 'emit');
   let storeState: any = null;
 
   beforeAll(() => {
@@ -32,6 +33,6 @@ describe('component modal module', () => {
     const cancelBtn: HTMLElement|null = document.querySelector('#cancel_modal_btn');
     cancelBtn && cancelBtn.click();
 
-    expect(Modal.reload).toBeCalled();
+    expect(EventBus.emit).toBeCalled();
   });
 });

@@ -1,5 +1,5 @@
+import EventBus from '../../../../../../EventBus';
 import store from '../../../../../../store';
-import Statistics from '../../../Statistics';
 import Item from '../index';
 
 const item = {
@@ -39,12 +39,11 @@ describe('component ListItem module', () => {
     Item.effect();
     const btns = document.querySelectorAll('div[id^="btn_status_"]');
 
-    jest.spyOn(Item, 'reload');
+    jest.spyOn(EventBus, 'emit');
     jest.spyOn(Item, 'unBind');
-    jest.spyOn(Statistics, 'reload').mockImplementation(() => void 0);
     btns.forEach((btn: HTMLElement) => btn.click());
 
-    expect(Item.reload).toBeCalled();
+    expect(EventBus.emit).toBeCalled();
     expect(Item.unBind).toBeCalled();
   });
 });

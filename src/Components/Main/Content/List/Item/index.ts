@@ -1,9 +1,9 @@
 import style from '../index.less';
 import store from '../../../../../store';
-import Statistics from '../../Statistics';
 
 import assets from '../../../../../assets';
-import Modal from '../../../../Modal';
+import { delay } from '../../../../../util';
+import EventBus from '../../../../../EventBus';
 
 const {
   cent_os,
@@ -79,8 +79,8 @@ const handleChangeStatus = (btn: HTMLElement) => {
   });
   const { cruises } = store.getState();
   const newItem = cruises.find((item: any) => item.id === id);
-  Item.reload(newItem);
-  Statistics.reload();
+  EventBus.emit('reload_main_content_list_item', newItem);
+  EventBus.emit('reload_statistics');
 };
 
 const handleDeleteBrowserItem = (item: HTMLElement) => {
@@ -90,7 +90,7 @@ const handleDeleteBrowserItem = (item: HTMLElement) => {
   });
   const { cruises } = store.getState();
   const newItem = cruises.find((item: any) => item.id === id);
-  Item.reload(newItem);
+  EventBus.emit('reload_main_content_list_item', newItem);
 }
 
 const handleAddBrowserItem = (item: HTMLElement) => {
@@ -103,7 +103,7 @@ const handleAddBrowserItem = (item: HTMLElement) => {
       id, bottom, x, y, visible: true,
     }
   });
-  Modal.reload();
+  EventBus.emit('reload_modal');
 };
 
 Item.effect = () => {
@@ -123,6 +123,8 @@ Item.effect = () => {
   listAddBtns.forEach((item: HTMLElement) => {
     item.addEventListener('click', handleAddBrowserItem.bind(null, item));
   });
+
+  EventBus.addListener('reload_main_content_list_item', handleItemReload);
 };
 
 Item.unBind = () => {
@@ -142,18 +144,18 @@ Item.unBind = () => {
   listAddBtns.forEach((item: HTMLElement) => {
     item.removeEventListener('click', handleAddBrowserItem.bind(null, item));
   });
+
+  EventBus.removeListener('reload_main_content_list_item', handleItemReload);
 }
 
-Item.reload = (data: any) => {
+const handleItemReload = async (data: any) => {
   Item.unBind();
-  setTimeout(() => {
-    const parentDom = document.querySelector('#main_list');
-    const oldDom = document.querySelector(`#list_${data.id}`);
-    const newDom = document.createRange().createContextualFragment(Item.render(data));
-    (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
-
-    setTimeout(() => {
-      Item.effect();
-    })
-  })
+  await delay();
+  const parentDom = document.querySelector(`#list_${data.id}`)?.parentNode;
+  const oldDom = document.querySelector(`#list_${data.id}`);
+  const newDom = document.createRange().createContextualFragment(Item.render(data));
+  (parentDom as HTMLElement).replaceChild(newDom, (oldDom as Element));
+  await delay(500);
+  Item.effect();
 }
+

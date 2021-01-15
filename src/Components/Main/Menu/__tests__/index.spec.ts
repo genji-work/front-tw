@@ -6,6 +6,7 @@ describe('component Menu module', () => {
 
   test('render & effect', () => {
     expect(Menu.render).toBeInstanceOf(Function);
+    const { dispatch } = store as any;
     const domStr = Menu.render();
     document.body.innerHTML = domStr;
     expect(document.body.firstElementChild?.id).toBe('menu');
@@ -17,7 +18,7 @@ describe('component Menu module', () => {
 
     const menuDoms = document.querySelectorAll(`.menus li`);
     menuDoms.forEach((menu: HTMLElement) => menu.click());
-    expect(store.dispatch).toBeCalled();
+    expect(dispatch).toBeCalled();
 
     const menuClose: HTMLElement|null = document.querySelector('#menu_close');
     menuClose && menuClose.click();

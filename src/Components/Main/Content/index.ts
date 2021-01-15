@@ -19,4 +19,5 @@ Content.render = () => {
 Content.effect = () => {
   Filter.effect();
   List.effect();
+  Statistics.effect();
 }

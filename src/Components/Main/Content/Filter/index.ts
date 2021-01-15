@@ -1,7 +1,7 @@
 import store from '../../../../store';
-import List from '../List';
 import style from './index.less';
-import { throttle } from '../../../../util';
+import { delay, throttle } from '../../../../util';
+import EventBus from '../../../../EventBus';
 
 export default function Filter() {}
 
@@ -25,7 +25,7 @@ Filter.render = () => {
   `;
 }
 
-const handleChangeMenu = (tab: HTMLElement, tabDoms: HTMLElement[]) => {
+const handleChangeMenu = async (tab: HTMLElement, tabDoms: HTMLElement[]) => {
   const { chooseTab } = store.getState();
   if (tab.dataset?.key !== chooseTab) {
     store.dispatch('setChooseTab', {
@@ -34,14 +34,13 @@ const handleChangeMenu = (tab: HTMLElement, tabDoms: HTMLElement[]) => {
     tabDoms.forEach((item: HTMLElement) => {
       item.classList.remove(style.selected);
     });
-    setTimeout(() => {
-      tab.classList.add(style.selected);
-      List.reload();
-    });
+    await delay();
+    tab.classList.add(style.selected);
+    EventBus.emit('reload_main_content_list');
   }
 }
 
-const handleChangeStyle = ($style: HTMLElement, styleDoms: HTMLElement[]) => {
+const handleChangeStyle = async ($style: HTMLElement, styleDoms: HTMLElement[]) => {
   const { chooseStyle } = store.getState();
   if ($style.dataset?.key !== chooseStyle) {
     store.dispatch('setChooseStyle', {
@@ -50,9 +49,8 @@ const handleChangeStyle = ($style: HTMLElement, styleDoms: HTMLElement[]) => {
     styleDoms.forEach((item: HTMLElement) => {
       item.classList.remove(style.choose);
     });
-    setTimeout(() => {
-      $style.classList.add(style.choose);
-    });
+    await delay();
+    $style.classList.add(style.choose);
   }
 }
 
@@ -64,7 +62,7 @@ const handleSearch = (e: Event | string) => {
   store.dispatch('setSearchValue', {
     searchValue: value,
   });
-  List.reload();
+  EventBus.emit('reload_main_content_list');
 };
 
 const handleSearchThrottle = throttle(handleSearch, 1000);
